@@ -1,0 +1,76 @@
+---
+title: "PAX_EDA_database"
+author: "Jose Luis Rivas Calduch"
+date: "8/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, include=FALSE}
+
+#Cargamos las diferentes librerias a emplear
+
+#Lectura del fichero csv
+library(readr)
+
+#Lectura del fichero excel
+library(readxl)
+
+# Paquete caret
+library(caret)
+
+# Manejo de data frames
+library(tidyverse)
+library(pander)
+
+#Libreria para representar gráficos
+library(ggpubr)
+library(ggplot2)
+
+#Libreria para el manejo de datos
+library(dplyr)
+library(psych)
+
+#Algoritmo random forest
+library(randomForest)
+
+#Computacion en paralelo
+library(doParallel)
+
+#Discretización de datos
+library(discretization)
+
+#Analisis predictores
+library(Boruta)
+
+```
+
+```{r, echo=FALSE}
+
+# Leemos los datos del dataset descargado
+
+rawData <- read_excel("../data/pax_all_agreements_data.xlsx")
+
+warnings()
+
+str(rawData)
+
+```
+
+### Limpieza de los datos:
+
+Vamos a identificar la existencia de valores nulos (NA´s) o vacios en el data set.
+
+**Estadísticas de los valores nulos**
+
+```{r}
+
+colSums(is.na(rawData))
+
+```
+
+
+
