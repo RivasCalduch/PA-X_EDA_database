@@ -19,11 +19,9 @@ library(readr)
 #Lectura del fichero excel
 library(readxl)
 
-# Paquete caret
-library(caret)
-
 # Manejo de data frames
 library(tidyverse)
+library(tidyr)
 library(pander)
 
 #Libreria para representar gráficos
@@ -34,18 +32,6 @@ library(ggplot2)
 library(dplyr)
 library(psych)
 
-#Algoritmo random forest
-library(randomForest)
-
-#Computacion en paralelo
-library(doParallel)
-
-#Discretización de datos
-library(discretization)
-
-#Analisis predictores
-library(Boruta)
-
 ```
 
 ## Descripción del trabajo:
@@ -54,7 +40,7 @@ El presente *R Markdown* forma parte del trabajo realizado por José Luis Rivas 
 
 En concreto se desarrolla la fase de análisis y exploración de los datos (*EDA*) objeto del trabajo anteriormente mencionado.
 
-Cabe destacar que la base de datos (*Database*) ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: https://www.peaceagreements.org/files/Terms_of_Use.pdf
+Cabe destacar que la base de datos (*Database*) *pax_all_agreements_data* ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: https://www.peaceagreements.org/files/Terms_of_Use.pdf
 
 ### Carga de los datos:
 
@@ -66,23 +52,323 @@ Como ya hemos indicado en el análisis preliminar de los datos inicialmente para
 
 rawData <- read_excel("../data/pax_all_agreements_data.xlsx")
 
-data <- rawData[1:26]
+datos <- rawData[1:26]
 
-str(data)
+str(datos)
+
+```
+
+se han identificado dentro del grupo seleccionado una serie de atributos categóricos que también se va a considerar su dejarlos fuera del análisis dado que cada registro es diferente al ser campos de texto libre ya que son descripciones. Dichos campos son:
+
+* *Agt*: Nombre del acuerdo.
+* *Part*: Firmantes del acuerdo.
+* *ThrdPart*: Terceros firmantes del acuerdo.
+* *OthAgr*: Otros acuerdos incluidos en el documento.
+
+```{r}
+
+datos <- select(datos,-Agt, -Part, -ThrdPart, -OthAgr)
 
 ```
 
 ### Limpieza de los datos:
 
-Vamos a identificar la existencia de valores nulos (NA´s) o vacios en el data set.
+Vamos a identificar la existencia de valores nulos (NA´s) o vacios en el datos set.
 
 **Estadísticas de los valores nulos**
 
 ```{r}
 
-colSums(is.na(data))
+colSums(is.na(datos))
+
+```
+
+Se han identificado 9 atributos que contienen valores nulos por lo que habrá que decirdir como tratarlos.
+
+**Estadísticas de los valores cero o vacios**
+
+```{r}
+
+colSums(datos=="")
+
+```
+
+```{r}
+
+colSums(datos==0)
+
+```
+
+No se identifican valores cero o vacios.
+
+### Atributos categóricos:
+
+#### *Con* Pais/Entidad:
+
+Se observa que el atributo contiene gran cantidad de valores únicos.
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Con))
+
+```
+
+Analizar el listado no se aprecia que podamos utilizar la columna para alguna visual dado que muchos de los valores esta compuesto por concatenación de paises o entidades y sería necesario tratar el atributo para su uso. Por lo que por el momento la descartamos.
+
+#### *Contp* Tipo conflicto:
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Contp))
+
+```
+* Diagrama de distribución:
+
+```{r}
+
+ggplot(data = datos, aes(x = Contp, y = ..count..)) +
+  geom_bar() +
+  labs(title = "Tipo de conflicto") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+```
+
+* Tabla de frecuencias (#):
+
+```{r}
+
+table(datos$Contp)
+
+```
+
+* Tabla de frecuencias (%):
+
+```{r}
+
+prop.table(table(datos$Contp)) %>% round(digits = 2)
+
+```
+
+Se observa que la mayoría de los acuerdos están relacionados con conflictos gubernamentales (80%).
+
+#### *PPName* Nombre proceso:
+
+Se observa que el atributo contiene gran cantidad de valores únicos.
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$PPName))
+
+```
+
+Analizar el listado no se aprecia que podamos utilizar la columna para alguna visual dado que muchos de los valores esta compuesto por concatenación de paises o entidades y sería necesario tratar el atributo para su uso. Por lo que por el momento la descartamos.
+
+#### *Reg* Región:
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Reg))
+
+```
+* Diagrama de distribución:
+
+```{r}
+
+ggplot(data = datos, aes(x = Reg, y = ..count..)) +
+  geom_bar() +
+  labs(title = "Región") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+```
+
+* Tabla de frecuencias (#):
+
+```{r}
+
+table(datos$Reg)
+
+```
+
+* Tabla de frecuencias (%):
+
+```{r}
+
+prop.table(table(datos$Reg)) %>% round(digits = 2)
+
+```
+
+Se observa que la mayoría de los acuerdos se concentran en Africa (45%).
+
+#### *Status* Estado del acuerdo:
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Status))
+
+```
+* Diagrama de distribución:
+
+```{r}
+
+ggplot(data = datos, aes(x = Status, y = ..count..)) +
+  geom_bar() +
+  labs(title = "Estado del acuerdo") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+```
+
+* Tabla de frecuencias (#):
+
+```{r}
+
+table(datos$Status)
+
+```
+
+* Tabla de frecuencias (%):
+
+```{r}
+
+prop.table(table(datos$Status)) %>% round(digits = 2)
+
+```
+
+Se observa que la mayoría de los acuerdos se concentran se encuentran firmado por las diferentes partes (92%).
+
+#### *Agtp* Tipo de acuerdo:
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Agtp))
+
+```
+* Diagrama de distribución:
+
+```{r}
+
+ggplot(data = datos, aes(x = Agtp, y = ..count..)) +
+  geom_bar() +
+  labs(title = "Tipo de acuerdo") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+```
+
+* Tabla de frecuencias (#):
+
+```{r}
+
+table(datos$Agtp)
+
+```
+
+* Tabla de frecuencias (%):
+
+```{r}
+
+prop.table(table(datos$Agtp)) %>% round(digits = 2)
+
+```
+
+Se observa que la mayoría de los acuerdos se concentran en conflictos dentro de los propios estados (83%).
+
+#### *Stage* Etapa:
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Stage))
+
+```
+* Diagrama de distribución:
+
+
+```{r}
+
+ggplot(data = datos, aes(x = Stage, y = ..count..)) +
+  geom_bar() +
+  labs(title = "Etapa del acuerdo") +
+  theme_bw() +
+  theme(legend.position = "bottom")
 
 ```
 
 
+* Tabla de frecuencias (#):
 
+```{r}
+
+table(datos$Stage)
+
+```
+
+* Tabla de frecuencias (%):
+
+```{r}
+
+prop.table(table(datos$Stage)) %>% round(digits = 2)
+
+```
+
+#### *StageSub* Subestapa del acuerdo:
+
+Dado que se considera que los atributos *Stage* y *StageSub* se encuentran ligados se cree apropiado que se analicen ambos en combinación creando un atributo sintético con su concatenado.
+
+```{r}
+
+datos <- unite(datos, stage_sintetico, c('Stage','StageSub'), sep = "&", remove=FALSE)
+
+```
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$stage_sintetico))
+
+```
+* Diagrama de distribución:
+
+```{r}
+
+ggplot(data = datos, aes(x = stage_sintetico, y = ..count..)) +
+  geom_bar() +
+  labs(title = "Agptión") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+```
+
+* Tabla de frecuencias (#):
+
+```{r}
+
+table(datos$stage_sintetico)
+
+```
+
+* Tabla de frecuencias (%):
+
+```{r}
+
+prop.table(table(datos$stage_sintetico)) %>% round(digits = 2)
+
+```
+
+Se observa que la mayoría de los acuerdos se concentran en conflictos dentro de los propios estados (83%).
