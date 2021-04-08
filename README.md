@@ -1,6 +1,6 @@
  ![Logo UOC](img/logo_uoc_peq.png?raw=true) 
   
-# PEC 2: Creación de visualizaciones de datos
+# PEC 2: Creación de visualizaciones de datos (EDA)
 
 ## Contenido
 
