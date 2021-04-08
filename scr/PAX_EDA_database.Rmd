@@ -48,9 +48,17 @@ library(Boruta)
 
 ```
 
+## Descripción del trabajo:
+
+El presente *R Markdown* forma parte del trabajo realizado por José Luis Rivas Calduch como alumno de **Master en Ciencia de Datos** de la **UOC** para la asignatura **Visualización de Datos** en concreto para la PEC 2 del curso 20-21 en su segundo semestre.
+
+En concreto se desarrolla la fase de análisis y exploración de los datos (*EDA*) objeto del trabajo anteriormente mencionado.
+
+Cabe destacar que la base de datos (*Database*) ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: https://www.peaceagreements.org/files/Terms_of_Use.pdf
+
 ### Carga de los datos:
 
-
+Como ya hemos indicado en el análisis preliminar de los datos inicialmente para este trabajo nos vamos a centrar en los primeros 26 atributos de la base de datos para su exploración.
 
 ```{r, echo=FALSE}
 
@@ -58,9 +66,9 @@ library(Boruta)
 
 rawData <- read_excel("../data/pax_all_agreements_data.xlsx")
 
-warnings()
+data <- rawData[1:26]
 
-str(rawData)
+str(data)
 
 ```
 
@@ -72,7 +80,7 @@ Vamos a identificar la existencia de valores nulos (NA´s) o vacios en el data s
 
 ```{r}
 
-colSums(is.na(rawData))
+colSums(is.na(data))
 
 ```
 
