@@ -48,6 +48,10 @@ library(Boruta)
 
 ```
 
+### Carga de los datos:
+
+
+
 ```{r, echo=FALSE}
 
 # Leemos los datos del dataset descargado
