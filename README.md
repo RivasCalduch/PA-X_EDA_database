@@ -11,3 +11,10 @@ Este repositorio contiene parte del trabajo realizado por José Luis Rivas Caldu
 En concreto se desarrolla la fase de análisis y exploración de los datos (*EDA*) objeto del trabajo anteriormente mencionado.
 
 Cabe destacar que la base de datos (*Database*) *pax_all_agreements_data* ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: https://www.peaceagreements.org/files/Terms_of_Use.pdf
+
+## Ficheros de codigo
+* **scr/PAX_EDA_database.Rmd:** Markdown con el codigo en R.
+
+
+## Ficheros con el dataset 
+* **csv/historico_indices_hipotecario_vivienda_{fecha obtención}.csv:** Fichero en csv con el resultado de *scraper_def.py*.  
