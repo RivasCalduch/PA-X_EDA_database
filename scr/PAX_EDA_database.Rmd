@@ -328,7 +328,7 @@ prop.table(table(datos$Stage)) %>% round(digits = 2)
 
 #### *StageSub* Subestapa del acuerdo:
 
-Dado que se considera que los atributos *Stage* y *StageSub* se encuentran ligados se cree apropiado que se analicen ambos en combinación creando un atributo sintético con su concatenado.
+Dado que se considera que los atributos *Stage* y *StageSub* se encuentran ligados se cree apropiado que se analicen ambos en combinación creando un atributo sintético con su concatenado. También  de esta manera tratamos los valores NAs existentes en el atributo.
 
 ```{r}
 
@@ -371,4 +371,192 @@ prop.table(table(datos$stage_sintetico)) %>% round(digits = 2)
 
 ```
 
-Se observa que la mayoría de los acuerdos se concentran en conflictos dentro de los propios estados (83%).
+Se observa que el número de niveles es muy elevado por lo que por el momento se decide que no se va a incorporar al análisis.
+
+#### *Loc1ISO* Localización ISO principal:
+
+* Número de valores únicos:
+
+```{r}
+
+length(unique(datos$Loc1ISO))
+
+```
+Se observa que existen 83 localizaciones diferentes. Esta información se puede utilizar para crear un mapa en el que podamos visualizar la distribución de los acuerdos.
+Cabe destacar que se han identificado 35 valores nulos en el atributo que deben ser tratados.
+
+#### *Loc2ISO* Localización ISO secundaria:
+
+Este atributo nos indica en el caso de que el acuerdo abarque varios países un segundo país según lo que se indica en la especificaciones de la base de datos la selección es aleatoria. No obstante se decide para simplificar el trabajo que solo se va a trabajar con la localización principal. Por otro lado indicar que el atributo cuenta con alto porcentaje de valores nulos dado que la mayoría de los conflictos solo afectan a un país.
+
+### Atributos numéricos:
+
+#### *PP* ID proceso:
+
+Es el identificador numérico del proceso de paz y está vinculado con el *PPName*. No lo vamos a utilizar en el análisis.
+
+#### *AgtId* ID acuerdo:
+
+Es el identificador numérico del acuerdo y está vinculado con el *Agt*. No lo vamos a considerar para el análisis.
+
+#### *Ver* Versión del acuerdo:
+
+* Medidas de tendencia central:
+
+```{r}
+
+summary(datos$Ver)
+
+```
+
+* Boxplot e histograma:
+
+```{r}
+
+par(mfrow = c(1,2))
+boxplot(datos$Ver)
+hist(datos$Ver)
+
+```
+
+#### *Lgt* Número de páginas:
+
+* Medidas de tendencia central:
+
+```{r}
+
+summary(datos$Lgt)
+
+```
+
+* Boxplot e histograma:
+
+```{r}
+
+par(mfrow = c(1,2))
+boxplot(datos$Lgt)
+hist(datos$Lgt)
+
+```
+
+#### *N_characters* Número de caracteres:
+
+* Medidas de tendencia central:
+
+```{r}
+
+summary(datos$N_characters)
+
+```
+
+* Boxplot e histograma:
+
+```{r}
+
+par(mfrow = c(1,2))
+boxplot(datos$N_characters)
+hist(datos$N_characters)
+
+```
+
+#### *Loc1GWNO* Localización GWC principal.
+
+El atributo es similar al al *Loc1ISO* ya que es un identificador de la localización. Se decide utilizar el ISO.
+
+#### Loc2GWNO Localización GWC secundaria.
+
+El atributo es similar al al *Loc2ISO* ya que es un identificador de la localización. Se decide utilizar el ISO.
+
+#### UcdpCon ID conflicto Uppsala
+
+No se va a utilizar el atributo para el análisis.
+
+#### UcdpAgr ID acuerdo Uppsala
+
+No se va a utilizar el atributo para el análisis.
+
+#### PamAgr ID matriz
+
+No se va a utilizar el atributo para el análisis. No obstante este atributo tiene muchos registros nulos (NAs) hecho que ya se advierte en el documento de las especificaciones.
+
+#### CowWar ID guerra
+
+No se va a utilizar el atributo para el análisis. No obstante este atributo tiene muchos registros nulos (NAs) hecho que ya se advierte en el documento de las especificaciones.
+
+#### Análisis de correlación entre *Lgt* y *N_characters*:
+
+
+```{r}
+
+cor(datos$Lgt,datos$N_characters)
+
+```
+
+```{r}
+
+pairs(datos$Lgt ~ datos$N_characters)
+
+```
+
+#### Análisis de correlación entre *Lgt* y *Ver*:
+
+
+```{r}
+
+cor(datos$Lgt,datos$Ver)
+
+```
+
+```{r}
+
+pairs(datos$Lgt ~ datos$Ver)
+
+```
+
+### Atributo fecha:
+
+#### *Dat* Fecha de firma del acuerdo:
+
+Se va a descomponer el atributo en año, mes y fecha para realizar su análisis.
+
+```{r}
+
+datos$Year <- substr(datos$Dat,1,4)
+datos$Year <- as.integer(datos$Year)
+
+datos$Month <- substr(datos$Dat,6,7)
+datos$Month <- as.integer(datos$Month)
+
+datos$Day <- substr(datos$Dat,9,10)
+datos$Day <- as.integer(datos$Day)
+
+```
+
+* Año:
+
+```{r}
+
+hist(datos$Year, breaks = 50)
+
+```
+
+Del la observación del histograma se puede interpretar que el número de acuerdos tiene una tendencia descendente aunque con un pico en la década 10.
+
+* Mes:
+
+```{r}
+
+hist(datos$Month)
+
+```
+
+Se observa un patrón por el cual la firma de acuerdos más del doble en el mes de enero mientras que en el resto de meses se mantiene estable.
+
+* Día:
+
+```{r}
+
+hist(datos$Day, breaks = 50)
+
+```
+Respecto al día de firma de los acuerdos no se observa un patrón claro.
