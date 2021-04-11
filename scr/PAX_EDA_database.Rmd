@@ -13,11 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #Cargamos las diferentes librerias a emplear
 
-#Lectura del fichero csv
-library(readr)
-
 #Lectura del fichero excel
 library(readxl)
+
+#Escritura fichero excel
+library(xlsx)
 
 # Manejo de data frames
 library(tidyverse)
@@ -560,3 +560,36 @@ hist(datos$Day, breaks = 50)
 
 ```
 Respecto al día de firma de los acuerdos no se observa un patrón claro.
+
+Una vez analizados se decide que se va a emplear el nuevo atributo sintético con el año con el objeto de analizar las tendencias.
+
+### Dataset de salida para el análisis visual:
+
+```{r}
+
+#Creamos un dataset con los datos a exportar
+
+salida <- data.frame(datos$Contp,datos$Reg,datos$Year,datos$Status, datos$Agtp, datos$Stage, datos$Loc1ISO)
+
+```
+
+```{r}
+
+#Renombramos las cabeceras para que sean más legibles
+names(salida) = c("Tipo_conflicto","Region","Año","Estado_acuerdo","Tipo_acuerdo","Etapa","Localizacion_ISO")
+
+```
+
+
+
+```{r}
+
+#Guardamos la salida en excel
+write.xlsx(salida, "../data/pax_all_agreements_data_proc.xlsx")
+
+```
+
+
+
+
+
