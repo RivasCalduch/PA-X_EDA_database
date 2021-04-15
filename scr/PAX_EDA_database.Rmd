@@ -2,7 +2,9 @@
 title: "PAX_EDA_database"
 author: "Jose Luis Rivas Calduch"
 date: "8/4/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,10 +15,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #Cargamos las diferentes librerias a emplear
 
-#Lectura del fichero excel
+#Lectura del ficheros excel
 library(readxl)
 
-#Escritura fichero excel
+#Lectura del ficheros csv
+library(readr)
+
+#Escritura ficheros excel
 library(xlsx)
 
 # Manejo de data frames
@@ -34,13 +39,13 @@ library(psych)
 
 ```
 
-## Descripción del trabajo:
+### Descripción del trabajo:
 
 El presente *R Markdown* forma parte del trabajo realizado por José Luis Rivas Calduch como alumno de **Master en Ciencia de Datos** de la **UOC** para la asignatura **Visualización de Datos** en concreto para la PEC 2 del curso 20-21 en su segundo semestre.
 
 En concreto se desarrolla la fase de análisis y exploración de los datos (*EDA*) objeto del trabajo anteriormente mencionado.
 
-Cabe destacar que la base de datos (*Database*) *pax_all_agreements_data* ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: https://www.peaceagreements.org/files/Terms_of_Use.pdf
+Cabe destacar que la base de datos (*Database*) *pax_all_agreements_data* ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: <https://www.peaceagreements.org/files/Terms_of_Use.pdf>
 
 ### Carga de los datos:
 
@@ -58,12 +63,12 @@ str(datos)
 
 ```
 
-se han identificado dentro del grupo seleccionado una serie de atributos categóricos que también se va a considerar su dejarlos fuera del análisis dado que cada registro es diferente al ser campos de texto libre ya que son descripciones. Dichos campos son:
+Se han identificado dentro del grupo seleccionado una serie de atributos categóricos que también se va a considerar dejarlos fuera del análisis dado que cada registro es diferente al ser campos de texto libre ya que son descripciones. Dichos campos son:
 
-* *Agt*: Nombre del acuerdo.
-* *Part*: Firmantes del acuerdo.
-* *ThrdPart*: Terceros firmantes del acuerdo.
-* *OthAgr*: Otros acuerdos incluidos en el documento.
+-   *Agt*: Nombre del acuerdo.
+-   *Part*: Firmantes del acuerdo.
+-   *ThrdPart*: Terceros firmantes del acuerdo.
+-   *OthAgr*: Otros acuerdos incluidos en el documento.
 
 ```{r}
 
@@ -73,7 +78,7 @@ datos <- select(datos,-Agt, -Part, -ThrdPart, -OthAgr)
 
 ### Limpieza de los datos:
 
-Vamos a identificar la existencia de valores nulos (NA´s) o vacios en el datos set.
+Vamos a identificar la existencia de valores nulos (NA´s) o vacíos en el datos set.
 
 **Estadísticas de los valores nulos**
 
@@ -83,7 +88,7 @@ colSums(is.na(datos))
 
 ```
 
-Se han identificado 9 atributos que contienen valores nulos por lo que habrá que decirdir como tratarlos.
+Se han identificado 9 atributos que contienen valores nulos por lo que habrá que decidir como tratarlos.
 
 **Estadísticas de los valores cero o vacios**
 
@@ -99,15 +104,15 @@ colSums(datos==0)
 
 ```
 
-No se identifican valores cero o vacios.
+No se identifican valores cero o vacíos.
 
 ### Atributos categóricos:
 
-#### *Con* Pais/Entidad:
+#### *Con* - Pais/Entidad:
 
 Se observa que el atributo contiene gran cantidad de valores únicos.
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
@@ -117,16 +122,17 @@ length(unique(datos$Con))
 
 Analizar el listado no se aprecia que podamos utilizar la columna para alguna visual dado que muchos de los valores esta compuesto por concatenación de paises o entidades y sería necesario tratar el atributo para su uso. Por lo que por el momento la descartamos.
 
-#### *Contp* Tipo conflicto:
+#### *Contp* - Tipo conflicto:
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$Contp))
 
 ```
-* Diagrama de distribución:
+
+-   Diagrama de distribución:
 
 ```{r}
 
@@ -138,7 +144,7 @@ ggplot(data = datos, aes(x = Contp, y = ..count..)) +
 
 ```
 
-* Tabla de frecuencias (#):
+-   Tabla de frecuencias (\#):
 
 ```{r}
 
@@ -146,7 +152,7 @@ table(datos$Contp)
 
 ```
 
-* Tabla de frecuencias (%):
+-   Tabla de frecuencias (%):
 
 ```{r}
 
@@ -156,11 +162,11 @@ prop.table(table(datos$Contp)) %>% round(digits = 2)
 
 Se observa que la mayoría de los acuerdos están relacionados con conflictos gubernamentales (80%).
 
-#### *PPName* Nombre proceso:
+#### *PPName -* Nombre proceso:
 
 Se observa que el atributo contiene gran cantidad de valores únicos.
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
@@ -170,16 +176,17 @@ length(unique(datos$PPName))
 
 Analizar el listado no se aprecia que podamos utilizar la columna para alguna visual dado que muchos de los valores esta compuesto por concatenación de paises o entidades y sería necesario tratar el atributo para su uso. Por lo que por el momento la descartamos.
 
-#### *Reg* Región:
+#### *Reg* - Región:
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$Reg))
 
 ```
-* Diagrama de distribución:
+
+-   Diagrama de distribución:
 
 ```{r}
 
@@ -191,7 +198,7 @@ ggplot(data = datos, aes(x = Reg, y = ..count..)) +
 
 ```
 
-* Tabla de frecuencias (#):
+-   Tabla de frecuencias (\#):
 
 ```{r}
 
@@ -199,7 +206,7 @@ table(datos$Reg)
 
 ```
 
-* Tabla de frecuencias (%):
+-   Tabla de frecuencias (%):
 
 ```{r}
 
@@ -209,16 +216,17 @@ prop.table(table(datos$Reg)) %>% round(digits = 2)
 
 Se observa que la mayoría de los acuerdos se concentran en Africa (45%).
 
-#### *Status* Estado del acuerdo:
+#### *Status* - Estado del acuerdo:
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$Status))
 
 ```
-* Diagrama de distribución:
+
+-   Diagrama de distribución:
 
 ```{r}
 
@@ -230,7 +238,7 @@ ggplot(data = datos, aes(x = Status, y = ..count..)) +
 
 ```
 
-* Tabla de frecuencias (#):
+-   Tabla de frecuencias (\#):
 
 ```{r}
 
@@ -238,7 +246,7 @@ table(datos$Status)
 
 ```
 
-* Tabla de frecuencias (%):
+-   Tabla de frecuencias (%):
 
 ```{r}
 
@@ -248,16 +256,17 @@ prop.table(table(datos$Status)) %>% round(digits = 2)
 
 Se observa que la mayoría de los acuerdos se concentran se encuentran firmado por las diferentes partes (92%).
 
-#### *Agtp* Tipo de acuerdo:
+#### *Agtp* - Tipo de acuerdo:
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$Agtp))
 
 ```
-* Diagrama de distribución:
+
+-   Diagrama de distribución:
 
 ```{r}
 
@@ -269,7 +278,7 @@ ggplot(data = datos, aes(x = Agtp, y = ..count..)) +
 
 ```
 
-* Tabla de frecuencias (#):
+-   Tabla de frecuencias (\#):
 
 ```{r}
 
@@ -277,7 +286,7 @@ table(datos$Agtp)
 
 ```
 
-* Tabla de frecuencias (%):
+-   Tabla de frecuencias (%):
 
 ```{r}
 
@@ -287,17 +296,17 @@ prop.table(table(datos$Agtp)) %>% round(digits = 2)
 
 Se observa que la mayoría de los acuerdos se concentran en conflictos dentro de los propios estados (83%).
 
-#### *Stage* Etapa:
+#### *Stage* - Etapa:
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$Stage))
 
 ```
-* Diagrama de distribución:
 
+-   Diagrama de distribución:
 
 ```{r}
 
@@ -309,8 +318,7 @@ ggplot(data = datos, aes(x = Stage, y = ..count..)) +
 
 ```
 
-
-* Tabla de frecuencias (#):
+-   Tabla de frecuencias (\#):
 
 ```{r}
 
@@ -318,7 +326,7 @@ table(datos$Stage)
 
 ```
 
-* Tabla de frecuencias (%):
+-   Tabla de frecuencias (%):
 
 ```{r}
 
@@ -326,9 +334,9 @@ prop.table(table(datos$Stage)) %>% round(digits = 2)
 
 ```
 
-#### *StageSub* Subestapa del acuerdo:
+#### *StageSub* - Subetapa del acuerdo:
 
-Dado que se considera que los atributos *Stage* y *StageSub* se encuentran ligados se cree apropiado que se analicen ambos en combinación creando un atributo sintético con su concatenado. También  de esta manera tratamos los valores NAs existentes en el atributo.
+Dado que se considera que los atributos *Stage* y *StageSub* se encuentran ligados se cree apropiado que se analicen ambos en combinación creando un atributo sintético con su concatenado. También de esta manera tratamos los valores NAs existentes en el atributo.
 
 ```{r}
 
@@ -336,14 +344,15 @@ datos <- unite(datos, stage_sintetico, c('Stage','StageSub'), sep = "&", remove=
 
 ```
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$stage_sintetico))
 
 ```
-* Diagrama de distribución:
+
+-   Diagrama de distribución:
 
 ```{r}
 
@@ -355,7 +364,7 @@ ggplot(data = datos, aes(x = stage_sintetico, y = ..count..)) +
 
 ```
 
-* Tabla de frecuencias (#):
+-   Tabla de frecuencias (\#):
 
 ```{r}
 
@@ -363,7 +372,7 @@ table(datos$stage_sintetico)
 
 ```
 
-* Tabla de frecuencias (%):
+-   Tabla de frecuencias (%):
 
 ```{r}
 
@@ -373,35 +382,35 @@ prop.table(table(datos$stage_sintetico)) %>% round(digits = 2)
 
 Se observa que el número de niveles es muy elevado por lo que por el momento se decide que no se va a incorporar al análisis.
 
-#### *Loc1ISO* Localización ISO principal:
+#### *Loc1ISO* - Localización ISO principal:
 
-* Número de valores únicos:
+-   Número de valores únicos:
 
 ```{r}
 
 length(unique(datos$Loc1ISO))
 
 ```
-Se observa que existen 83 localizaciones diferentes. Esta información se puede utilizar para crear un mapa en el que podamos visualizar la distribución de los acuerdos.
-Cabe destacar que se han identificado 35 valores nulos en el atributo que deben ser tratados.
 
-#### *Loc2ISO* Localización ISO secundaria:
+Se observa que existen 83 localizaciones diferentes. Esta información se puede utilizar para crear un mapa en el que podamos visualizar la distribución de los acuerdos. Cabe destacar que se han identificado 35 valores nulos en el atributo que deben ser tratados.
+
+#### *Loc2ISO* - Localización ISO secundaria:
 
 Este atributo nos indica en el caso de que el acuerdo abarque varios países un segundo país según lo que se indica en la especificaciones de la base de datos la selección es aleatoria. No obstante se decide para simplificar el trabajo que solo se va a trabajar con la localización principal. Por otro lado indicar que el atributo cuenta con alto porcentaje de valores nulos dado que la mayoría de los conflictos solo afectan a un país.
 
 ### Atributos numéricos:
 
-#### *PP* ID proceso:
+#### *PP* - ID proceso:
 
 Es el identificador numérico del proceso de paz y está vinculado con el *PPName*. No lo vamos a utilizar en el análisis.
 
-#### *AgtId* ID acuerdo:
+#### *AgtId* - ID acuerdo:
 
 Es el identificador numérico del acuerdo y está vinculado con el *Agt*. No lo vamos a considerar para el análisis.
 
-#### *Ver* Versión del acuerdo:
+#### *Ver* - Versión del acuerdo:
 
-* Medidas de tendencia central:
+-   Medidas de tendencia central:
 
 ```{r}
 
@@ -409,7 +418,7 @@ summary(datos$Ver)
 
 ```
 
-* Boxplot e histograma:
+-   Boxplot e histograma:
 
 ```{r}
 
@@ -419,9 +428,9 @@ hist(datos$Ver)
 
 ```
 
-#### *Lgt* Número de páginas:
+#### *Lgt* - Número de páginas:
 
-* Medidas de tendencia central:
+-   Medidas de tendencia central:
 
 ```{r}
 
@@ -429,7 +438,7 @@ summary(datos$Lgt)
 
 ```
 
-* Boxplot e histograma:
+-   Boxplot e histograma:
 
 ```{r}
 
@@ -439,9 +448,9 @@ hist(datos$Lgt)
 
 ```
 
-#### *N_characters* Número de caracteres:
+#### *N_characters* - Número de caracteres:
 
-* Medidas de tendencia central:
+-   Medidas de tendencia central:
 
 ```{r}
 
@@ -449,7 +458,7 @@ summary(datos$N_characters)
 
 ```
 
-* Boxplot e histograma:
+-   Boxplot e histograma:
 
 ```{r}
 
@@ -459,32 +468,31 @@ hist(datos$N_characters)
 
 ```
 
-#### *Loc1GWNO* Localización GWC principal.
+#### *Loc1GWNO* - Localización GWC principal.
 
 El atributo es similar al al *Loc1ISO* ya que es un identificador de la localización. Se decide utilizar el ISO.
 
-#### Loc2GWNO Localización GWC secundaria.
+#### Loc2GWNO - Localización GWC secundaria.
 
 El atributo es similar al al *Loc2ISO* ya que es un identificador de la localización. Se decide utilizar el ISO.
 
-#### UcdpCon ID conflicto Uppsala
+#### UcdpCon - ID conflicto Uppsala
 
 No se va a utilizar el atributo para el análisis.
 
-#### UcdpAgr ID acuerdo Uppsala
+#### UcdpAgr - ID acuerdo Uppsala
 
 No se va a utilizar el atributo para el análisis.
 
-#### PamAgr ID matriz
+#### PamAgr - ID matriz
 
 No se va a utilizar el atributo para el análisis. No obstante este atributo tiene muchos registros nulos (NAs) hecho que ya se advierte en el documento de las especificaciones.
 
-#### CowWar ID guerra
+#### CowWar - ID guerra
 
 No se va a utilizar el atributo para el análisis. No obstante este atributo tiene muchos registros nulos (NAs) hecho que ya se advierte en el documento de las especificaciones.
 
 #### Análisis de correlación entre *Lgt* y *N_characters*:
-
 
 ```{r}
 
@@ -502,7 +510,6 @@ Se observa que existe una fuerte correlación entre el número de páginas y pal
 
 #### Análisis de correlación entre *Lgt* y *Ver*:
 
-
 ```{r}
 
 cor(datos$Lgt,datos$Ver)
@@ -519,7 +526,7 @@ No existe correlación.
 
 ### Atributo fecha:
 
-#### *Dat* Fecha de firma del acuerdo:
+#### *Dat* - Fecha de firma del acuerdo:
 
 Se va a descomponer el atributo en año, mes y fecha para realizar su análisis.
 
@@ -536,7 +543,7 @@ datos$Day <- as.integer(datos$Day)
 
 ```
 
-* Año:
+-   Año:
 
 ```{r}
 
@@ -546,7 +553,7 @@ hist(datos$Year, breaks = 50)
 
 Del la observación del histograma se puede interpretar que el número de acuerdos tiene una tendencia descendente aunque con un pico en la década 10.
 
-* Mes:
+-   Mes:
 
 ```{r}
 
@@ -556,13 +563,14 @@ hist(datos$Month)
 
 Se observa un patrón por el cual la firma de acuerdos más del doble en el mes de enero mientras que en el resto de meses se mantiene estable.
 
-* Día:
+-   Día:
 
 ```{r}
 
 hist(datos$Day, breaks = 50)
 
 ```
+
 Respecto al día de firma de los acuerdos no se observa un patrón claro.
 
 Una vez analizados se decide que se va a emplear el nuevo atributo sintético con el año con el objeto de analizar las tendencias.
@@ -577,21 +585,53 @@ salida <- data.frame(datos$Contp,datos$Reg,datos$Year,datos$Status, datos$Agtp, 
 
 ```
 
-```{r}
+#### Incorporacion de variables externas
 
-#Renombramos las cabeceras para que sean más legibles
-names(salida) = c("Tipo_conflicto","Region","Año","Estado_acuerdo","Tipo_acuerdo","Etapa","Localizacion_ISO")
+Dado que solo tenemos la codificación de los países codificada en caracteres vamos a incorporar a nuestro data set para su posterior uso.
+
+Para ello hemos obtenido una tabla con la codificación del siguiente reporsitorio de *GitHub*: <https://gist.github.com/brenes/1095110>, en el cual se proporciona el mapeo de la codificación con el nombre de los paises.
+
+```{r, echo=FALSE}
+
+# Leemos los datos del dataset descargado
+
+paises <- read_delim("../data/paisesISO.csv", 
+    ";", escape_double = FALSE, trim_ws = TRUE)
+
+str(paises)
 
 ```
+
+```{r}
+
+paises_corto <- select(paises, iso3, nombre)
+
+str(paises_corto)
+
+```
+
+```{r}
+
+#Renombrados las cabeceras para que sean más legibles
+names(salida) = c("Tipo_conflicto","Region","Año","Estado_acuerdo","Tipo_acuerdo","Etapa","Localizacion_ISO")
+names(paises_corto) = c("Localizacion_ISO", "Nombre_ISO")
+
+```
+
+```{r}
+
+#Fusionamos los data frames
+salida_final <- merge(salida, paises_corto, by = "Localizacion_ISO", all.x = TRUE, incomparables = NULL)
+
+```
+
+#### Exportamos:
+
+Creamos un fichero en excel que será la entrada de los datos para Tableau.
 
 ```{r}
 
 #Guardamos la salida en excel
-write.xlsx(salida, "../data/pax_all_agreements_data_proc.xlsx")
+write.xlsx(salida_final, "../data/pax_all_agreements_data_proc.xlsx")
 
 ```
-
-
-
-
-
