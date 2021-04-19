@@ -12,9 +12,16 @@ En concreto se desarrolla la fase de análisis y exploración de los datos (*EDA
 
 Cabe destacar que la base de datos (*Database*) *pax_all_agreements_data* ha sido elaborada por la profesora Christine Bell de la Universidad de Edimburgo y que su uso se encuentra regido por los siguientes términos contenidos en el enlace de a continuación: https://www.peaceagreements.org/files/Terms_of_Use.pdf
 
-## Ficheros de codigo
+## Fichero de codigo
 * **scr/PAX_EDA_database.Rmd:** Markdown con el codigo en R.
 
+## Ficheros con el resultado del análisis
+* **outcome/PAX_EDA_database.pdf:** Fichero PDF con el libro de R Markdown desarrollado
+* **outcome/pax_all_agreements_data_proc.xlsx:** Fichero excel con el resultado del análisis y fuente de datos para el cuadro de mando a desarrollar. 
 
-## Ficheros con el dataset 
-* **csv/historico_indices_hipotecario_vivienda_{fecha obtención}.csv:** Fichero en csv con el resultado de *scraper_def.py*.  
+## Ficheros con los inputs del análisis
+* **data/pax_all_agreements_data.xlsx:** Fichero excel con la base de datos.  
+* **data/paisesISO.csv:** Fichero en csv información de los paises del mundo y su codificación ISO.
+
+## Ficheros con información adicional 
+* **doc/**: Esta carpeta contiene información adicional para una mayor comprensión de la base de datos objeto de estudio.
